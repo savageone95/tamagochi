@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<style type="text/css">
+
+		body {
+			background-color: pink;
+			height: 110vh;
+		}
+
+		.wrapper-t {
+			display: flex;
+			justify-content: space-around;
+			padding: 5px;
+
+		}
+
+		.chooseanimal {
+			font-size: 35px;
+			text-align: center;
+
+
+		}
+
+		progress {
+			margin: auto;
+			background-color: red;
+			 
+		}
+
+		.tamagoji {
+			border:3px solid red;
+		 	max-width: 400px;
+			
+		}
+
+		button {
+			background: red;
+		}
+
+
+		p {
+			margin: auto;
+		}
+
+		.butt {
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			flex-direction: column;
+		}
+
+		.behavior {
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+			max-width: 250px;
+			margin: auto;
+			padding:25px;
+		}
+
+		button {
+			padding: 5px;
+
+		}
+
+		.for-flex{
+			display: flex;
+			justify-content: center;
+			 
+		}
+
+		.nametj {
+			text-align: center;
+		}
+
+		[type="radio"] {
+			display: none;
+		}
+
+		[type="radio"] + img {
+			border: 5px solid transparent;
+		}
+
+		[type="radio"]:checked + img {
+			border: 9px solid red;
+		}
+
+		.prevent {
+			pointer-events: none;
+		}
+
+	</style>
+<section tamagochi>
+		<main class="wrapper-t">
+			<label>
+				<input type="radio" name="animal" checked>
+				<img src="J.jpg">
+			</label>
+			<section class="for-flex"> 
+				<div class="tamagoji">
+					<div class="nametj">
+						<p>Name For Animal</p>
+						<input type="text" name="petName" placeholder="Give Name">
+						<button onclick="choose()">Choose</button>
+					</div>
+				 	<div class="butt">
+						<p>Animal Rest</p>
+						<progress id="animalRest" min="0" max="100"></progress>
+
+						<p>Animal Mood</p>
+						<progress id="animalMood" min="0" max="100"></progress>
+
+						<p>Animal Satiety</p>
+						<progress id="animalSatiety" min="0" max="100"></progress>
+
+						<p>Animal Hygiene</p>
+						<progress id="animalHygiene" min="0" max="100"></progress>
+
+						<p>Animal Health</p>
+						<progress id="animalHealth" min="0" max="100"></progress>
+
+						<div id="petBehavior" class="behavior prevent">
+							<button id="eat" onclick="tama.eat()">Feed your animal</button>
+							<button id="walk" onclick="tama.walk()">Walk with your animal</button>
+							<button id="educate" onclick="tama.educate()">Educate your animal</button>
+							<button id="sleep" onclick="tama.sleep()">Put to sleep your animal</button>
+							<button id="wash" onclick="tama.wash()">Wash your animal</button>
+							<button id="entertain" onclick="tama.entertain()">Entertain your animal</button>
+						</div>
+					</div>
+				</div>
+			</section>
+			<label>
+				<input type="radio" name="animal">
+				<img src="T.jpg">
+			</label>
+			<!-- Добавили лейбел в нем радио кнопка с картинкой(понял как надо) -->
+		</main>
+	</section>
+ 
+	<script type="text/javascript">
+		
+		var tama;
+
+		function choose(){
+			var petName = document.querySelector("[name=petName]");
+			// возвращает элемент в переменную, в данном случае из импута [name="value"];
+			if (!petName.value){
+				alert("Enter pet name");
+				return;
+			}
+			// если имя не ввидено, алерт об ошибке с просьбой ввести имя
+			
+			var animal = document.getElementsByName("animal");
+			// возвращаем элемент ввиде списка
+			for (var i = 0; i<animal.length; i++){
+				if (animal[i].checked){
+					break;
+				 
+				}
+			}
+
+			switch(animal[i].value) {
+				case 'Mouse':
+					tama = new Mouse(petName.value);
+					break;
+				case 'Cat':
+					tama = new Cat(petName.value);
+					break;
+				default:
+					tama = new PetBehavior(petName.value);
+			}
+			// в switch идет свяка с самим конструтором и кастомными функциями. а так же объявление именни, которое задается в petName.
+			console.log(tama);
+			petBehavior.classList.remove('prevent');
+		}  // удаляет класс 'prevent'
+		 
+		function PetBehavior(name){
+			this.activeAction = ''; // Пустое значение в которое возвращается действие с прототипов.
+			this.name = name;
+			this.rest = 70;
+			this.mood = 50;
+			this.satiety = 50;
+			this.hygiene = 60;
+			this.health = 70;
+			PetBehavior.updateInfo(this);
+
+			this.timeOut = function(variable, value, time) {
+			  		setTimeout(() => {
+		    		this[variable] += value;
+		    		this.activeAction = '';
+		    	}, time);
+			}
+
+			this.timer = setInterval(() => {
+	    		this.rest--;
+				this.mood--;
+				this.satiety--;
+				this.hygiene--;
+				this.health--;
+				PetBehavior.updateInfo(this);
+				setInterval(() => {
+				if(this.activeAction == 'eat'){
+					this.satiety++;
+					
+				}
+	    		},3000);
+			}, 1000);// таймер при котором каждые 1000ms будет отниматься 1 стат у всех позиций.
+		}
+
+		 window.onwheel = function() {Scroll()};
+ 				function Scroll() {
+ 					if(tama) {
+						tama.mood++;
+						}
+					}
+
+
+			var add = document.getElementById('eat');
+			var addeat = document.createElement('div');
+			 
+
+
+			 
+		PetBehavior.updateInfo = function(tamagochi) {
+			animalRest.value = tamagochi.rest;
+			animalMood.value = tamagochi.mood;
+			animalSatiety.value = tamagochi.satiety;
+			animalHygiene.value = tamagochi.hygiene;
+			animalHealth.value = tamagochi.health;
+		}
+
+		PetBehavior.prototype.eat = function(){
+			var add = document.getElementById('eat');
+			var addeat = document.createElement('div');
+			addeat.innerHTML = alert("animal is eat");
+			this.activeAction = 'eat';
+			this.timeOut('satiety', 10, 1000); // задаваемые значения для параметров тамагочи.
+			PetBehavior.updateInfo(this);// связь с конструктором.
+		}
+
+		PetBehavior.prototype.walk = function(){
+			this.activeAction = 'walk';
+			this.timeOut('health', 10, 1000);
+			this.timeOut('hygiene', -10, 1000);
+			PetBehavior.updateInfo(this);
+		}
+
+		PetBehavior.prototype.sleep = function(){
+			this.activeAction = 'sleep';
+			this.timeOut('rest', 10, 1000);
+			PetBehavior.updateInfo(this);
+		}
+
+		PetBehavior.prototype.entertain = function(){
+			this.activeAction = 'entertain';
+			this.timeOut('rest', -10, 1000);
+			this.timeOut('mood', 10, 1000);
+			PetBehavior.updateInfo(this);
+		}
+
+		PetBehavior.prototype.wash = function(){
+			this.activeAction = 'wash';
+			this.timeOut('hygiene', 10, 1000);
+			PetBehavior.updateInfo(this);
+		}
+
+		PetBehavior.prototype.educate = function(){
+			this.activeAction = 'educate';
+			this.timeOut('mood', -10, 1000);
+			PetBehavior.updateInfo(this);
+		}
+
+		PetBehavior.prototype.play = function(){
+			this.activeAction = 'play';
+			this.timeOut('mood', 1, 1000);
+			this.timeOut('energy', -1, 1000);
+			this.timeOut('hygieny', -1, 1000);
+			PetBehavior.updateInfo(this);
+		}
+ 
+
+
+		function Mouse(name){
+			PetBehavior.call(this,name);
+			this.play = function(){
+				this.timeOut('health', 2, 1000);
+				this.timeOut('mood', 2, 1000);
+				this.timeOut('energy', -1, 1000);
+				this.timeOut('hygieny', -3, 1000);
+				PetBehavior.updateInfo(this);
+			}
+		}
+		// Перезаписанные функции
+		function Cat(name){
+			PetBehavior.call(this,name);
+			this.wash = function(){
+				this.timeOut('mood', -1, 1000);
+				this.timeOut('hygieny', 1, 1000);
+				PetBehavior.updateInfo(this);
+			}
+			this.sleep = function(){
+				this.timeOut('energy', 1, 1000);
+				PetBehavior.updateInfo(this);
+			}
+		}
+	</script>
+</body>
+</html>
